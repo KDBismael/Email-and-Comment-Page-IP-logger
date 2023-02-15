@@ -8,12 +8,14 @@
         $fp = fopen($csvFile, 'a');
     } else {
         $fp = fopen($csvFile, 'w');
-        fputcsv($fp, array_keys($data),$delimiter," ");
+        fputcsv($fp, array_keys($data),$delimiter);
     }
-    fputcsv($fp, $data,$delimiter," ");
+    $newData=implode("|",$data);
+    fputcsv($fp, array($newData),$delimiter);
+    // fputcsv($fp, $data,$delimiter);
     fclose($fp);
   }
   // Return a response to the JavaScript
-  echo json_encode(array("status" => "success"))
+  // echo json_encode(array("status" => "success"))
 ?>
 

@@ -5,26 +5,27 @@ var getIpInfo=getIpInfo();
 var InternetSpeed=getInternetSpeed();
 var getHttpHeader=getHttpHeader();
 var getScreeResolution=getScreeResolution()
-var getIp=` ${getIpV4Info()} `;
+var getIp=getIpV4Info();
 var clickOrLoad=false;
+
 var userData={
     email:"not filled",
     comment:"not filled",
-    IpV4Address:getIp,//ok `${}`
-    IpV6Address:window.ipaddr.IPv6.isIPv6(getIpInfo.ip)?getIpInfo.ip:'no ipV6',//ok
+    IpV4Address:getIp,//ok 
+    IpV6Address:window.ipaddr.IPv6.isIPv6(getIpInfo.ip)?getIpInfo.ip:"no ipV6",//ok
     BrowserTypeAndVersion:platform.name+' version '+platform.version,//ok
-    OperatingSystem:`architecture:${platform.os.architecture}, family:${platform.os.family}, version:${platform.os.version},`,//ok 
-    DeviceType:` ${WURFL.form_factor} `,//ok
-    ScreenResolution:`${getScreeResolution}`,//ok
-    TimeAndDateOfVisit:`${getDate()}`,//ok
-    ReferralSource:`${document.referrer?document.referrer:"nor referral source"}`,//ok
-    Location:`City:${getIpInfo.city}, Country:${getIpInfo.country}`,//ok
-    InternetServiceProvider:` ${getIpInfo.org} `,//ok
-    LanguagePreferences:` ${navigator.language} `,//ok
-    UserAgentString:`${navigator.userAgent}`,//ok
-    WebPageVisited:` ${document.location.href} `,//ok
+    OperatingSystem:`architecture:${platform.os.architecture},family:${platform.os.family},version:${platform.os.version},`,//ok 
+    DeviceType:WURFL.form_factor,//ok
+    ScreenResolution:getScreeResolution,//ok
+    TimeAndDateOfVisit:getDate(),//ok
+    ReferralSource:document.referrer?document.referrer:"not referral source",//ok
+    Location:`City:${getIpInfo.city},Country:${getIpInfo.country}`,//ok
+    InternetServiceProvider:getIpInfo.org,//ok
+    LanguagePreferences:navigator.language,//ok
+    UserAgentString:navigator.userAgent,//ok
+    WebPageVisited:document.location.href,//ok
     InternetSpeedAndConnectionType:'',//ok
-    HTTPHeaders:`${getHttpHeader.headers}`,//ok
+    HTTPHeaders:getHttpHeader.headers,//ok
     deviceBatteryLevel:'',
     deviceChargingStatus:'',
 }
@@ -53,7 +54,7 @@ function getHttpHeader (){
     var req = new XMLHttpRequest();
     req.open('GET', document.location, false);
     req.send(null);
-    var headers = req.getAllResponseHeaders().toLowerCase().split('\r\n').join(", ");
+    var headers = req.getAllResponseHeaders().toLowerCase().split('\r\n').join(",");
     return {headers};
 }
 //Battery information
@@ -61,7 +62,7 @@ function getBatteryInfo(){
     if(navigator.getBattery){
         navigator.getBattery().then((battery) => {
             userData.deviceChargingStatus=battery.charging? 'Charging' : 'Not charging'
-            userData.deviceBatteryLevel=` ${battery.level*100}% `
+            userData.deviceBatteryLevel=`${battery.level*100}%`
         })
     }
 }
@@ -122,29 +123,16 @@ btn.addEventListener('click',(e)=>{
     if(!validation){
         return;
     }
-    userData.email=` ${emailVal} `;
-    userData.comment=` ${commentVal} `;
+    userData.email=emailVal;
+    userData.comment=commentVal;
     getInternetSpeed().then(function(speed) {
-        userData.InternetSpeedAndConnectionType=`${speed} KB/s`;
+        userData.InternetSpeedAndConnectionType=`${speed}KB/s`;
         console.log(userData);
         sendDataToStore().then((data)=>{
             window.location='pages/download.php';
         });
     });
 });
-// window.addEventListener("load",function(){
-//     clickOrLoad=true;
-// })
-// window.addEventListener("beforeunload", function (e) {
-//     if(!clickOrLoad){
-//         sendDataToStore().then((data)=>{
-//             console.log(data);
-//         });
-//     }
-//     return "Are you sure you want to leave this page?";
-// });
-
-//I have made a modif on download.js file
 
 setTimeout(() => {
     getInternetSpeed().then(function(speed) {
